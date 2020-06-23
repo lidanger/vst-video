@@ -563,18 +563,18 @@ void MainWindow::ExploreMenu(const QPoint &pos)
 void MainWindow::on_action_explore_play_triggered()
 {
     if(_tableView->isVisible())
-        on_tableView_doubleClicked(_tableView->indexAt(QCursor::pos()));
+        on_tableView_doubleClicked(_tableView->currentIndex());
     else
-        on_listWidget_itemDoubleClicked(ui->listWidget->itemAt(QCursor::pos()));
+        on_listWidget_itemDoubleClicked(ui->listWidget->currentItem());
 }
 
 // 调用关联应用直接打开，一般会是浏览器
 void MainWindow::on_action_explore_xopen_triggered()
 {
     if(_tableView->isVisible())
-        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+        export_list_to_detail(_tableView->currentIndex().row());
     else
-        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
+        export_list_to_detail(ui->listWidget->currentRow());
 
     if (ui->comboBox_part->count() > 0)
     {
@@ -624,9 +624,9 @@ void MainWindow::export_list_to_detail(int currentIndex)
 void MainWindow::on_action_explore_xplay_triggered()
 {
     if(_tableView->isVisible())
-        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+        export_list_to_detail(_tableView->currentIndex().row());
     else
-        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
+        export_list_to_detail(ui->listWidget->currentRow());
 
     if (ui->comboBox_part->count() > 0)
     {
@@ -642,9 +642,9 @@ void MainWindow::on_action_explore_xplay_triggered()
 void MainWindow::on_action_explore_xnew_triggered()
 {
     if(_tableView->isVisible())
-        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+        export_list_to_detail(_tableView->currentIndex().row());
     else
-        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
+        export_list_to_detail(ui->listWidget->currentRow());
 
     if (ui->comboBox_part->count() > 0)
     {
