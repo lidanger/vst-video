@@ -494,20 +494,12 @@ void MainWindow::endRequestPreviewVideoInfo(QString word)
 
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
+    Q_UNUSED(item);
+
     if(vBrowse.id.isEmpty())
         return;
 
-    int row = ui->listWidget->row(item);
-
-    ui->comboBox_name->clear();
-    ui->comboBox_part->clear();
-
-    for (int i = 0; i < vBrowse.id.size(); i++)
-    {
-        ui->comboBox_name->addItem(vBrowse.name.value(i), vBrowse.api + "|" + vBrowse.id.value(i));
-    }
-
-    ui->comboBox_name->setCurrentIndex(row);
+    export_list_to_detail(ui->listWidget->row(item));
 
     show_loading(true);
 
@@ -548,25 +540,12 @@ void MainWindow::endRequestDetailPlay(int part, int time)
 
 void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 {
+    Q_UNUSED(index);
+
     if(search_model->rowCount() == 0)
         return;
 
-    ui->comboBox_name->clear();
-    ui->comboBox_part->clear();
-
-    // vSearch.value(i).pic.value(i2) 是空的
-    QString name, word;
-    for(int i = 0; i < search_model->rowCount(); i++)
-    {
-        name = search_model->item(i, 4)->text();
-
-        QStringList v = search_model->item(i, 0)->data().toString().split("|");
-        word = v.at(1) + "|" + v.at(2);
-
-        ui->comboBox_name->addItem(name, word);
-    }
-
-    ui->comboBox_name->setCurrentIndex(index.row());
+    export_list_to_detail(index.row());
 
     show_loading(true);
 
@@ -584,15 +563,18 @@ void MainWindow::ExploreMenu(const QPoint &pos)
 void MainWindow::on_action_explore_play_triggered()
 {
     if(_tableView->isVisible())
-        on_tableView_doubleClicked(_tableView->currentIndex());
+        on_tableView_doubleClicked(_tableView->indexAt(QCursor::pos()));
     else
-        on_listWidget_itemDoubleClicked(ui->listWidget->currentItem());
+        on_listWidget_itemDoubleClicked(ui->listWidget->itemAt(QCursor::pos()));
 }
 
 // 调用关联应用直接打开，一般会是浏览器
 void MainWindow::on_action_explore_xopen_triggered()
 {
-    export_list_to_detail();
+    if(_tableView->isVisible())
+        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+    else
+        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
 
     if (ui->comboBox_part->count() > 0)
     {
@@ -600,8 +582,12 @@ void MainWindow::on_action_explore_xopen_triggered()
     }
 }
 
-void MainWindow::export_list_to_detail()
+void MainWindow::export_list_to_detail(int currentIndex)
 {
+    // 停止发信号
+    ui->comboBox_name->blockSignals(true);
+    ui->comboBox_part->blockSignals(true);
+
     ui->comboBox_name->clear();
     ui->comboBox_part->clear();
 
@@ -618,8 +604,6 @@ void MainWindow::export_list_to_detail()
 
             ui->comboBox_name->addItem(name, word);
         }
-
-        ui->comboBox_name->setCurrentIndex(_tableView->currentIndex().row());
     }
     else
     {
@@ -627,15 +611,22 @@ void MainWindow::export_list_to_detail()
         {
             ui->comboBox_name->addItem(vBrowse.name.value(i), vBrowse.api + "|" + vBrowse.id.value(i));
         }
-
-        ui->comboBox_name->setCurrentIndex(ui->listWidget->currentIndex().row());
     }
+
+    // 开启发信号
+    ui->comboBox_name->blockSignals(false);
+    ui->comboBox_part->blockSignals(false);
+
+    ui->comboBox_name->setCurrentIndex(currentIndex);
 }
 
 // 下载到本地再调用关联应用打开
 void MainWindow::on_action_explore_xplay_triggered()
 {
-    export_list_to_detail();
+    if(_tableView->isVisible())
+        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+    else
+        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
 
     if (ui->comboBox_part->count() > 0)
     {
@@ -650,7 +641,10 @@ void MainWindow::on_action_explore_xplay_triggered()
 // 新窗口打开
 void MainWindow::on_action_explore_xnew_triggered()
 {
-    export_list_to_detail();
+    if(_tableView->isVisible())
+        export_list_to_detail(_tableView->indexAt(QCursor::pos()).row());
+    else
+        export_list_to_detail(ui->listWidget->indexAt(QCursor::pos()).row());
 
     if (ui->comboBox_part->count() > 0)
     {
@@ -663,13 +657,6 @@ void MainWindow::on_action_explore_xnew_triggered()
 
         QProcess::startDetached(QDir::currentPath() + "/vst-video", list);
     }
-}
-
-void MainWindow::on_action_explore_detail_triggered()
-{
-    export_list_to_detail();
-
-    ui->tabWidget->setCurrentWidget(ui->tab_detail);
 }
 
 void MainWindow::explore_view(bool listMode)

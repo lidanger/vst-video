@@ -189,7 +189,7 @@ void MainWindow::on_action_resource_triggered()
     QtConcurrent::run(this, &MainWindow::requestResources);
 }
 
-// 取资源数据
+// 获取资源数据
 void MainWindow::requestResources()
 {
     // type.clear();
@@ -213,6 +213,7 @@ void MainWindow::endRequestResources()
 
     for (int i = 0; i < sources.size(); i++)
     {
+        // 大类
         _tree_model->setItem(i, 0, new QStandardItem(sources.value(i).name));
 
         if (sources.value(i).name != "直播列表")
@@ -220,6 +221,7 @@ void MainWindow::endRequestResources()
             ui->search_source->addItem(sources[i].name);
         }
 
+        // 子类
         foreach (Nameinfo var, sources[i].type)
         {
             _tree_model->item(i)->appendRow(new QStandardItem(var.name));

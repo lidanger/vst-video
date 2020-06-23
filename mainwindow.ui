@@ -1721,8 +1721,6 @@ QPushButton:hover{
     <addaction name="action_explore_xopen"/>
     <addaction name="action_explore_xnew"/>
     <addaction name="action_explore_xplay"/>
-    <addaction name="separator"/>
-    <addaction name="action_explore_detail"/>
    </widget>
    <widget class="QMenu" name="menu_seting">
     <property name="title">

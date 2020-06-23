@@ -184,8 +184,6 @@ private slots:
 
     void on_label_VideoName_linkActivated(const QString &link);
 
-    void on_action_explore_detail_triggered();
-
     void playlist_currentIndexChanged(int index);
 
     void on_detail_partlist_itemClicked(QListWidgetItem *item);
@@ -300,7 +298,7 @@ private:
 
     void explore_view(bool listMode = false);
 
-    void export_list_to_detail();
+    void export_list_to_detail(int currentIndex);
 };
 
 #endif // MAINWINDOW_H

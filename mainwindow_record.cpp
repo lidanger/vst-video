@@ -21,13 +21,11 @@ void MainWindow::renotes()
     if (keys.size() == 0)
         return;
 
-    QStringList list;
-    QString key;
     for (int i = 0; i < keys.size(); i++)
     {
         //【片名】分集名称|pic|api|id|part|time
-        key = config.getValue(keys.value(i)).toString();
-        list = key.split("|");
+        QString key = config.getValue(keys.value(i)).toString();
+        QStringList list = key.split("|");
 
         QAction *test = new QAction(list.value(0), this);
         test->setData(list);
@@ -52,37 +50,52 @@ void MainWindow::menu_action_notes_triggered(QAction *action)
         return;
     }
 
+    // 禁止发信号
+    ui->comboBox_name->blockSignals(true);
+    ui->comboBox_part->blockSignals(true);
+
+    // 清空原有播放信息
     ui->comboBox_name->clear();
     ui->comboBox_part->clear();
     ui->info_des->clear();
 
-    // 添加所有播放记录
+    // 添加所有播放记录到详情播放列表
     QString name, api, id;
     QStringList v;
+    QStringList data;
     foreach(QAction *sub, ui->menu_notes->actions())
     {
-        //【片名】分集名称|api|id|part|time
-        v = sub->data().toList().value(0).toString().split("】");
+        //【片名】分集名称
+        //api
+        //id
+        //part
+        //time
+        data = sub->data().toStringList();
+
+        v = data.value(0).split("】");
         name = v.first().mid(1);
-        api = sub->data().toList().value(1).toString();
-        id = sub->data().toList().value(2).toString();
+        api = data.value(1);
+        id = data.value(2);
 
         ui->comboBox_name->addItem(name, api + "|" + id);
     }
 
-    // 设置当前播放记录
-    v = action->data().toList().value(0).toString().split("】");
-    name = v.first().mid(1);
-    QString part = action->data().toList().value(3).toString();
-    QString time = action->data().toList().value(4).toString();
+    // 开启发信号
+    ui->comboBox_name->blockSignals(false);
+    ui->comboBox_part->blockSignals(false);
 
-    show_loading(true);
-    app.live = false;
+    // 开始播放
+    data = action->data().toStringList();
+    v = data.value(0).split("】");
+    name = v.first().mid(1);
 
     ui->comboBox_name->setCurrentText(name);
 
+    app.live = false;
     show_loading(true);
 
+    QString part = data.value(3);
+    QString time = data.value(4);
     QtConcurrent::run(this, &MainWindow::requestDetailPlay, part.toInt(), time.toInt());
 }
 

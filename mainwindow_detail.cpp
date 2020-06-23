@@ -36,7 +36,7 @@ void MainWindow::on_comboBox_name_currentIndexChanged(int index)
         loadMedia();
 
         // 介绍
-        ui->info_des->setHtml(todes(vDetail, index));        
+        ui->info_des->setHtml(todes(vDetail, index));
     }
     else
     {
@@ -133,6 +133,10 @@ void MainWindow::endRequestDetailImage(QString word)
 // 根据列表序号加载媒体
 void MainWindow::loadMedia(int index)
 {
+    // 停止发信号
+    ui->comboBox_part->blockSignals(true);
+    ui->detail_partlist->blockSignals(true);
+
     ui->comboBox_part->clear();
     ui->detail_partlist->clear();
 
@@ -161,6 +165,10 @@ void MainWindow::loadMedia(int index)
             ui->detail_partlist->addItem(item);
         }
     }
+
+    // 开启发信号
+    ui->comboBox_part->blockSignals(false);
+    ui->detail_partlist->blockSignals(false);
 
     if(ui->comboBox_part->count() > 0 && index < ui->comboBox_part->count())
     {
@@ -203,13 +211,19 @@ void MainWindow::on_info_play_clicked()
 // 加载播放
 void MainWindow::loadPlay(int index, qint64 time)
 {
-    ui->label_VideoName->setText(QString::asprintf("<a href='https://github.com/xymov/vst-video/'>%s", ui->comboBox_name->currentText().toLocal8Bit().data()));
+    // 视频名称
+    ui->label_VideoName->setText(QString::asprintf("<a href='https://github.com/xymov/vst-video/'>%s</a>", ui->comboBox_name->currentText().toLocal8Bit().data()));
 
     video->setUpdatesEnabled(true);
 
     ui->sliderProgress->setEnabled(true);
 
     player->stop();
+
+    // 禁止发信号
+    playlist->blockSignals(true);
+    ui->player_control_part->blockSignals(true);
+
     playlist->clear();
     ui->player_control_part->clear();
 
@@ -222,14 +236,18 @@ void MainWindow::loadPlay(int index, qint64 time)
         ui->player_control_part->addItem(ui->comboBox_part->itemText(i));
     }
 
+    // 开启发信号
+    playlist->blockSignals(false);
+    ui->player_control_part->blockSignals(false);
+
     // 设置分集输入自动选择
     QCompleter *completer = new QCompleter(ui->player_control_part->model(), this);
     completer->setFilterMode(Qt::MatchContains);
     ui->player_control_part->setCompleter(completer);
 
     // 选择播放内容和位置
-    playlist->setCurrentIndex(index);
     ui->player_control_part->setCurrentIndex(index);
+    playlist->setCurrentIndex(index);
 
     player->setPosition(time);
 
@@ -271,5 +289,6 @@ void MainWindow::on_detail_partlist_itemClicked(QListWidgetItem *item)
 void MainWindow::on_detail_partlist_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->comboBox_part->setCurrentText(item->text());
+
     on_info_play_clicked();
 }
