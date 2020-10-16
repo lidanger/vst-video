@@ -4,10 +4,6 @@
 #include <QMainWindow>
 #include "set.h"
 #include "config.h"
-#include "framelesshelper.h"
-
-
-
 
 
 
@@ -78,6 +74,8 @@ typedef struct Appinfo
 {
    bool  playlist;
 
+   int videoMode=0;
+
    QString sourcePath;
 
    QString livePath;
@@ -88,7 +86,10 @@ typedef struct Appinfo
 
    QString notes;
 
+   bool playState;
+
    int angle=0, mh=1, mv=1;
+   int page;
 
    QStringList arguments;
 
@@ -266,17 +267,7 @@ private slots:
 
      void on_action_openurl_triggered();
 
-     void on_action_brightness_add_triggered();
 
-     void on_action_brightness_sub_triggered();
-
-     void on_action_contrast_add_triggered();
-
-     void on_action_contrast_sub_triggered();
-
-     void on_action_Saturation_add_triggered();
-
-     void on_action_Saturation_sub_triggered();
 
      void on_action_videosize_IgnoreAspectRatio_triggered();
 
@@ -315,11 +306,6 @@ private slots:
 
      void on_pushButton_max_clicked();
 
-     void on_action_seting_triggered();
-
-
-     //void on_action_mini_triggered();
-
      void on_action_resource_triggered();
 
      void  renotes();
@@ -328,22 +314,13 @@ private slots:
 
      //void on_action_tophint_triggered();
 
-    void  setWindowsTopHint();
-    void  remWindowsTopHint();
+    void  setWindowsTopHint(bool);
 
      void TitlebarMenu(const QPoint &pos);
-
-
-     void on_action_tophint_toggled(bool arg1);
 
      void on_action_theme_1_triggered();
 
      void on_action_theme_2_triggered();
-
-     void on_action_theme_0_triggered();
-
-
-     void metaDataChange();
 
 
      void on_action_rotate_left_triggered();
@@ -354,6 +331,37 @@ private slots:
 
      void on_action_rotate_y_triggered();
 
+     void switchtheme(int,bool);
+
+
+
+     void on_action_tophint_triggered();
+
+     void on_box_explore_currentChanged(int index);
+     void Sleep(int msec);
+
+     void on_action_update_triggered();
+
+     void on_action_set_triggered();
+
+     void bufferStatusChanged(int);
+
+
+
+
+
+     void on_action_theme_0_triggered();
+
+
+
+
+     void on_action_video_triggered();
+
+     void on_action_graphics_triggered();
+
+
+     void on_action_break_triggered();
+
 signals:
 
 
@@ -363,15 +371,16 @@ signals:
 
  protected:
        virtual void resizeEvent(QResizeEvent *event) override;
-
+       virtual bool eventFilter(QObject *target, QEvent *event) override;
 private:
 
     Ui::MainWindow *ui;
 
     //窗口任意移动
-    bool        m_bDrag;
+    bool        m_bDrag=false;
     QPoint      mouseStartPoint;
     QPoint      windowTopLeftPoint;
+
 
     QStandardItemModel *student_model;
     QString STimeDuration="00:00:00";
@@ -387,10 +396,14 @@ private:
     Config  config;
 
 
+
     QGraphicsScene *scene;
     QGraphicsVideoItem *GVI;
     QGraphicsTextItem *GTI;
-    QWidget*   viewWidget;
+    QWidget* viewWidget,*expWidget,*searchWidget;
+
+
+
 
 
     int widthV, heightV;
@@ -400,7 +413,7 @@ private:
     void  getCommond();
     void  setVideoMode(Qt::AspectRatioMode mode);
     void echoload(bool echo);
-    bool eventFilter(QObject *target, QEvent *event);
+
     void ThreadFunc(int,QString);
     void createListWidget(QListWidget *listWidget,int key,bool insert);
     void createLoading();
@@ -410,7 +423,11 @@ private:
 
     void MinWriteNotes(int index);
 
-    void showMessage(QString);
+    void showMessage(QString,bool);
+
+    void hideMessage();
+
+
 
     //运行信息
     Appinfo app;
@@ -490,7 +507,6 @@ private:
             QPixmap currentPicture;
             currentPicture.loadFromData(reply->readAll());
             currentPicture.save(filename);//保存图片
-
             reply->deleteLater();
             reply = nullptr;
 
@@ -583,7 +599,16 @@ private:
                         Nameinfo  name;
                         name.id=element.attribute("id");
                         name.name=element.text();
-                        cInfo.type << name;
+
+                        QString typeFilter=config.get("set","typeFilter").toString();
+
+
+                        //分类过滤
+                        if(typeFilter.trimmed()=="" || name.name.indexOf(QRegExp(typeFilter))==-1){
+                             cInfo.type << name;
+                         }
+
+
                     }
                       listDom(element,cInfo);
                 }
@@ -767,12 +792,12 @@ private:
 
                      #ifdef Q_OS_WIN32
 
-                       QString m_szHelpDoc = QString("file:///") + url;
+                        QString m_szHelpDoc =url;
+                         //QString m_szHelpDoc = QString("file:///") + url;
                        bool is_open = QDesktopServices::openUrl(QUrl(m_szHelpDoc, QUrl::TolerantMode));
                        if(!is_open)
                        {
-                           LogWriter::getLogCenter()->PrintLog(LOG_ERROR,"open help doc failed" );
-                           LogWriter::getLogCenter()->SaveFileLog(LOG_ERROR,"open help doc failed" );
+                           qDebug()<<"ERROR:open help doc failed";
                            return;
                        }
                    #else
@@ -866,8 +891,6 @@ private:
                                 file.close();
                             }
                         }
-
-
 
 
 
