@@ -210,7 +210,6 @@ void MainWindow::_show_fullscreen()
         _fullscreen_button->setIcon(QIcon(":/img/full_out.svg"));
 
         this->showNormal();
-        WebResource::instance()->app.isFullScreen = false;
 
         _titlebar->show();
 
@@ -233,7 +232,6 @@ void MainWindow::_show_fullscreen()
         _fullscreen_button->setIcon(QIcon(":/img/general_out.svg"));
         _stack->setStyleSheet("border:none;");
 
-        WebResource::instance()->app.isFullScreen = true;
         this->showFullScreen();
     }
 
