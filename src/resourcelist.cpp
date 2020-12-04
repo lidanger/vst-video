@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "webresource.h"
 
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>
@@ -52,8 +53,8 @@ void ResourceList::reload()
 void ResourceList::_init()
 {
     this->setLayout(new QHBoxLayout(this));
-    this->layout()->setMargin(0);
-    this->layout()->setSpacing(0);
+//    this->layout()->setMargin(0);
+//    this->layout()->setSpacing(0);
 
     // 资源列表
     _tree = new QTreeView(this);
