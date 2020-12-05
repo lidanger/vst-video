@@ -24,6 +24,7 @@ public:
 
 public:
     bool eventFilter(QObject *watched, QEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void _show_search_player();

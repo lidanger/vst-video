@@ -714,6 +714,11 @@ void PlayerPage::_control_timeOut()
             _control->hide();
             emit requestShowTitleBar(false);
         }
+        else
+        {
+            _control->show();
+            emit requestShowTitleBar(true);
+        }
     }
     else
     {

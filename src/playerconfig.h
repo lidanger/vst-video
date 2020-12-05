@@ -93,7 +93,7 @@ public:
     int sidebarState() { return _getValue("Window", "SidebarState", 1).toInt(); }
 
     void setSidebarWidth(int width) { _setValue("Window", "SidebarWidth", width); }
-    int sidebarWidth() { return _getValue("Window", "SidebarWidth", 200).toInt(); }
+    int sidebarWidth() { return _getValue("Window", "SidebarWidth", 153).toInt(); }
 
     void setTheme(QString name) { _setValue("Window", "Theme", name); }
     QString theme() { return _getValue("Window", "Theme", "").toString(); }

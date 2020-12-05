@@ -3,6 +3,7 @@
 #include "loading.h"
 #include "mainwindow.h"
 #include "playerconfig.h"
+#include "playerconfig.h"
 #include "resourcesettings.h"
 #include "shortcutsettings.h"
 #include "titlebar.h"
@@ -61,21 +62,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             else if(_dock->isHidden())
             {
                 _dock->show();
+                WebResource::instance()->app.hideResource = false;
             }
-        }
-    }
-    else if(event->type() == QEvent::Show || event->type() == QEvent::ShowToParent)
-    {
-        if(watched == _dock)
-        {
-            WebResource::instance()->app.hideResource = false;
-        }
-    }
-    else if(event->type() == QEvent::Hide || event->type() == QEvent::HideToParent)
-    {
-        if(watched == _dock)
-        {
-            WebResource::instance()->app.hideResource = true;
         }
     }
     else if(event->type() == QEvent::WindowStateChange)
@@ -87,6 +75,18 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
 
     return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event)
+
+    // 保存配置
+    if(!this->isMaximized() && !this->isMinimized() && !this->isFullScreen())
+        PlayerConfig::instance()->setWindowSize(this->size());
+    PlayerConfig::instance()->setWindowState(static_cast<int>(this->windowState()));
+    PlayerConfig::instance()->setSidebarState(_dock->isVisible());
+    PlayerConfig::instance()->setSidebarWidth(_dock->width());
 }
 
 void MainWindow::_show_search_player()
@@ -213,6 +213,7 @@ void MainWindow::_show_fullscreen()
 
         _titlebar->show();
         _dock->setVisible(WebResource::instance()->app.showResourceBeforeFullScreen);
+        WebResource::instance()->app.hideResource = _dock->isHidden();
 
         setWindowState(WebResource::instance()->app.statesBeforeFullScreen);
     }
@@ -224,6 +225,7 @@ void MainWindow::_show_fullscreen()
 
         _titlebar->hide();
         _dock->hide();
+        WebResource::instance()->app.hideResource = true;
 
         _fullscreen_button->setIcon(QIcon(":/img/general_out.svg"));
         _stack->setStyleSheet("border:none;");
@@ -283,6 +285,7 @@ void MainWindow::_show_big_video()
 void MainWindow::_show_resouceList()
 {
     _dock->setVisible(!_dock->isVisible());
+    WebResource::instance()->app.hideResource = _dock->isHidden();
 }
 
 void MainWindow::_show_titleBar(bool show)
@@ -292,7 +295,9 @@ void MainWindow::_show_titleBar(bool show)
 
 void MainWindow::_init_window()
 {
-    this->setMinimumSize(800, 545);
+    this->setMinimumSize(906, 543);
+    this->resize(PlayerConfig::instance()->windowSize());
+    this->setWindowState(static_cast<Qt::WindowState>(PlayerConfig::instance()->windowState()));
     this->setWindowFlags(Qt::FramelessWindowHint | this->windowFlags());
     if(PlayerConfig::instance()->topHint())
         this->setWindowFlags(this->windowFlags() | Qt::WindowStaysOnTopHint);
@@ -426,8 +431,8 @@ void MainWindow::_init_control()
     _stack->addWidget(_search_page);
 
     // 资源区
-    _dock = new QDockWidget("资源列表", this);
-    _dock->setMinimumWidth(145);
+    _dock = new QDockWidget("资源列表", _real_window);
+    _dock->setMinimumSize(145, 100);
     _dock->setMaximumWidth(400);
     _dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     //_dock->setStyleSheet("QDockWidget::float-button{background:transparent;}");
@@ -436,10 +441,13 @@ void MainWindow::_init_control()
     connect(_dock, SIGNAL(topLevelChanged(bool)), this, SLOT(_dock_topLevelChanged(bool)));
     _dock->installEventFilter(this);
     _real_window->addDockWidget(Qt::LeftDockWidgetArea, _dock);
-    _real_window->resizeDocks({_dock}, {153}, Qt::Horizontal);
     _real_window->setStyleSheet("QMainWindow::separator{"
                                 "width:1px;"
                                 "height:1px;}");
+    auto width = PlayerConfig::instance()->sidebarWidth();
+    _real_window->resizeDocks({_dock}, {width}, Qt::Horizontal);
+    _dock->setVisible(PlayerConfig::instance()->sidebarState());
+    WebResource::instance()->app.hideResource = _dock->isHidden();
 
     _resource = new ResourceList(this);
     connect(_resource, SIGNAL(resourceSelected(const QString &, int, bool)), this, SLOT(_start_browse(const QString &, int, bool)));

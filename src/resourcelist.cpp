@@ -58,6 +58,7 @@ void ResourceList::_init()
 
     // 资源列表
     _tree = new QTreeView(this);
+    _tree->setMinimumSize(100, 100);
     _tree->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(_tree, SIGNAL(pressed(const QModelIndex &)), this, SLOT(_tree_pressed(const QModelIndex &)));
     this->layout()->addWidget(_tree);
