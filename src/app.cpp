@@ -8,7 +8,6 @@ App::App(int &argc, char **argv)
 {
     this->setApplicationName("vst-video");
     this->setOrganizationName("xymov");
-    this->setAttribute(Qt::AA_EnableHighDpiScaling);
 
     connect(this, &QApplication::aboutToQuit, this, &App::_aboutToQuit);
 }

@@ -25,13 +25,7 @@ project(vst-video
 
 # build targets
 
-find_package(Qt5Widgets)
-find_package(Qt5Core)
-find_package(Qt5Gui)
-find_package(Qt5Multimedia)
-find_package(Qt5MultimediaWidgets)
-find_package(Qt5Xml)
-find_package(Qt5Concurrent)
+find_package(Qt5 COMPONENTS Core Gui Multimedia MultimediaWidgets Xml Concurrent)
 
 aux_source_directory(src SRC)
 
@@ -124,6 +118,11 @@ if(DPKG)
     set(CPACK_DEBIAN_PACKAGE_SECTION "text")
     
     set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${PROJECT_HOMEPAGE_URL})
+
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS 
+        libqt5multimedia5-plugins 
+        gstreamer1.0-plugins-bad 
+        gstreamer1.0-libav)
     
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     

@@ -84,7 +84,7 @@ private:
     QSlider *_volume_slider;
     QLabel *_volume_value;
     QLabel *_time;
-    QLabel *_name_label;
+    //QLabel *_name_label;
     QLabel *_name;
     QComboBox *_part;
     QLabel *_status;

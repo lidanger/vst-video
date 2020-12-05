@@ -45,7 +45,7 @@ void PlayerPage::startPlayLive(int index)
     }
 
     _progress->setEnabled(true);
-    _name_label->show();
+    //_name_label->show();
     _name->setText(_video_names.value(index));
     _name->show();
     _part->hide();
@@ -204,7 +204,7 @@ void PlayerPage::startPlayVideo(const QString &name, const QStringList &part_nam
     WebResource::instance()->app.live = false;
     WebResource::instance()->app.local = false;
 
-    _name_label->show();
+    //_name_label->show();
     _name->show();
     _part->show();
     _progress->setEnabled(true);
@@ -355,7 +355,7 @@ void PlayerPage::_initLayout()
     _play_timer->setInterval(30 * 1000);
 
     // 控制面板
-    _control->setFixedHeight(75);
+    _control->setFixedHeight(80);
     _control->setLayout(new QVBoxLayout(_control));
     _control->installEventFilter(this);
     this->layout()->addWidget(_control);
@@ -371,7 +371,7 @@ void PlayerPage::_initLayout()
 
     // 播放按钮面板
     auto _control_buttons = new QFrame(this);
-    _control_buttons->setFixedHeight(40);
+    _control_buttons->setFixedHeight(45);
     _control_buttons->setLayout(new QHBoxLayout(_control_buttons));
     _control_buttons->layout()->setMargin(0);
     _control_buttons->layout()->setSpacing(15);
@@ -444,10 +444,10 @@ void PlayerPage::_initLayout()
     _control_buttons->layout()->addWidget(_time);
 
     // 片名
-    _name_label->setFixedHeight(40);
-    _name_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    _name_label->hide();
-    _control_buttons->layout()->addWidget(_name_label);
+    //_name_label->setFixedHeight(40);
+    //_name_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    //_name_label->hide();
+    //_control_buttons->layout()->addWidget(_name_label);
 
     _name->setFixedHeight(40);
     _name->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -846,7 +846,7 @@ void PlayerPage::_initControl()
     _volume_value = new QLabel(this);
     _volume_slider_timer = new QTimer;
     _time = new QLabel(this);
-    _name_label = new QLabel("资源名称: ", this);
+    //_name_label = new QLabel("资源名称: ", this);
     _name = new QLabel("片名", this);
     _part = new QComboBox(this);
     _status = new QLabel("准备就绪", this);

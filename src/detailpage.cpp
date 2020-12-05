@@ -111,8 +111,9 @@ void DetailPage::_init()
 
     // 播放按钮
     auto play_buttons = new QGroupBox(this);
-    play_buttons->setFixedHeight(70);
+    play_buttons->setFixedHeight(75);
     play_buttons->setLayout(new QHBoxLayout(play_buttons));
+    play_buttons->layout()->setMargin(0);
     preview->layout()->addWidget(play_buttons);
 
     _prev = new QPushButton(this);
@@ -123,7 +124,7 @@ void DetailPage::_init()
     play_buttons->layout()->addWidget(_prev);
 
     _play = new QPushButton(this);
-    _play->setFixedSize(36, 57);
+    _play->setFixedSize(33, 52);
     _play->setStyleSheet("QPushButton{border-image:url(://img/play_at.svg) 0px 0px no-repeat; background: transparent;}"
                          "QPushButton:hover{background:transparent;border-image:url(://img/play_on.svg) 0px 0px no-repeat;}");
     connect(_play, &QPushButton::pressed, this, [=](){_play_video();});
