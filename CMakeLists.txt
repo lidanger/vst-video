@@ -119,10 +119,7 @@ if(DPKG)
     
     set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${PROJECT_HOMEPAGE_URL})
 
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS 
-        libqt5multimedia5-plugins 
-        gstreamer1.0-plugins-bad 
-        gstreamer1.0-libav)
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5multimedia5-plugins, gstreamer1.0-plugins-bad, gstreamer1.0-libav")
     
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     
