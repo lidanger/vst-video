@@ -9,14 +9,14 @@ void MainWindow::initResource()
     // 检查资源文件
     if (!isFileExists(app.sourcePath))
     {
-        QFile soucre("://resource/source/source.txt");
+        QFile soucre(":/source/source.txt");
         soucre.copy(app.sourcePath);
         QFile(app.sourcePath).setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     }
 
     if (!isFileExists(app.livePath))
     {
-        QFile soucre("://resource/source/live.txt");
+        QFile soucre(":/source/live.txt");
         soucre.copy(app.livePath);
         QFile(app.livePath).setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     }
@@ -29,13 +29,31 @@ void MainWindow::initResource()
 
     // 资源列表
     _tree_model = new QStandardItemModel(ui->tree_source);                     // 创建模型
-    _tree_model->setHorizontalHeaderLabels(QStringList() << QStringLiteral("资源列表"));
+    //_tree_model->setHorizontalHeaderLabels(QStringList() << QStringLiteral("资源列表"));
+    ui->tree_source->header()->hide();
     // model->setItem(0,0,new QStandardItem("正在刷新.."));
     ui->tree_source->setModel(_tree_model);
     ui->tree_source->setEditTriggers(QAbstractItemView::NoEditTriggers); // 不可编辑
 
-    ui->search_source->installEventFilter(this);
+    //ui->search_source->installEventFilter(this);
     ui->search_name->installEventFilter(this);
+
+    auto action = new QAction("列表", this);
+    action->setShortcut(QKeySequence("F7"));
+    connect(action, &QAction::triggered, this, &MainWindow::switch_player_list);
+    this->addAction(action);
+}
+
+void MainWindow::switch_player_list()
+{
+    if(ui->tabWidget->currentWidget() == ui->tab_browse)
+    {
+        ui->tabWidget->setCurrentWidget(ui->tab_player);
+    }
+    else
+    {
+        ui->tabWidget->setCurrentWidget(ui->tab_browse);
+    }
 }
 
 // 树形框项目被选择
@@ -111,13 +129,19 @@ void MainWindow::on_search_name_returnPressed()
     }
     else
     {
-        show_loading(true);
+        if(_searchString != ui->search_name->text())
+        {
+            _searchString = ui->search_name->text();
 
-        QtConcurrent::run(this, &MainWindow::requestSearch, ui->search_name->text() + "|" + QString::number(ui->search_source->currentIndex()));
+            show_loading(true);
 
-        ui->tabWidget->setCurrentWidget(ui->tab_browse);
-        explore_view(true);
+            QtConcurrent::run(this, &MainWindow::requestSearch, ui->search_name->text() + "|0");
+        }
     }
+
+    ui->tabWidget->setCurrentWidget(ui->tab_browse);
+    explore_view(true);
+    this->setFocus();
 }
 
 void MainWindow::requestSearch(QString word)
@@ -208,18 +232,18 @@ void MainWindow::endRequestResources()
     _tree_model->removeRows(0, _tree_model->rowCount());
     _tree_model->setItem(0, 0, new QStandardItem("正在刷新..."));
 
-    ui->search_source->clear();
-    ui->search_source->addItem("全部");
+    //ui->search_source->clear();
+    //ui->search_source->addItem("全部");
 
     for (int i = 0; i < sources.size(); i++)
     {
         // 大类
         _tree_model->setItem(i, 0, new QStandardItem(sources.value(i).name));
 
-        if (sources.value(i).name != "直播列表")
-        {
-            ui->search_source->addItem(sources[i].name);
-        }
+//        if (sources.value(i).name != "直播列表")
+//        {
+//            ui->search_source->addItem(sources[i].name);
+//        }
 
         // 子类
         foreach (Nameinfo var, sources[i].type)

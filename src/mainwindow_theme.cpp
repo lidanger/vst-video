@@ -24,6 +24,7 @@ void MainWindow::initTheme()
 /*  主题切换     */
 void MainWindow::on_action_theme_1_triggered()
 {
+    this->setStyleSheet("");
     this->setStyleSheet("QWidget{background-color:#606060;}");
     config.set("set", "theme", 1);
     ui->action_theme_0->setChecked(false);
@@ -32,6 +33,7 @@ void MainWindow::on_action_theme_1_triggered()
 
 void MainWindow::on_action_theme_2_triggered()
 {
+    this->setStyleSheet("");
     this->setStyleSheet("QWidget{background-color:#f0f0f0;}");
     config.set("set", "theme", 2);
     ui->action_theme_0->setChecked(false);

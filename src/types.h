@@ -48,7 +48,7 @@ typedef struct Appinfo
         if(!dir2.exists())
             dir2.mkpath(cache);
 
-        nopic = "://resource/img/timg.jpeg";
+        nopic = ":/img/timg.jpeg";
 
         live = false;
     }

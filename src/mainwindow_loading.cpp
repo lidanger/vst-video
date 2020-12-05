@@ -10,7 +10,7 @@ void MainWindow::initLoading()
     widgetLayout->setMargin(0);
     widgetLayout->setSpacing(0);
 
-    QMovie *movie = new QMovie("://resource/img/loading.gif");
+    QMovie *movie = new QMovie(":/img/loading.gif");
     movie->start();
     QLabel *load = new QLabel();
     load->setMovie(movie);

@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     // 设置播放器为默认选项卡
     ui->tabWidget->setCurrentWidget(ui->tab_player);
 
+    this->setFocus();
+
     // 检查命令行参数
     getCommond();
 }
@@ -49,8 +51,6 @@ MainWindow::~MainWindow()
     delete _tray;
 
     qDebug() << "App quit success!" << endl;
-
-    exit(0);
 }
 
 // 主窗口初始化
@@ -68,11 +68,10 @@ void MainWindow::initMainWindow()
     ui->menuBar->hide();
     //ui->status->hide();
 
+    ui->tabWidget->tabBar()->hide();
+
     connect(this, SIGNAL(setshow()), &seting, SLOT(reshow()));
     connect(this, SIGNAL(quit()), &seting, SLOT(quit()));
-
-    // 关闭窗口退出应用 相当于Close信号关联Delete信号
-    this->setAttribute(Qt::WA_DeleteOnClose, true);
 
     // 注册监视对象
     this->installEventFilter(this);
@@ -160,6 +159,9 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
         if(target != _volume_slider)
         {
             hideVolumeSlider();
+
+            if(target != ui->search_name)
+                this->setFocus();
         }
     }
     else if(event->type() == QEvent::FocusOut)
@@ -168,6 +170,13 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
         if (target == _volume_slider)
         {
             hideVolumeSlider();
+        }
+        else if(target == ui->search_name)
+        {
+            ui->pushButton_search->setIcon(QIcon(":/img/search.svg"));
+
+            ui->search_name->hide();
+            this->setFocus();
         }
     }
     // 处理搜索回车消息
@@ -309,7 +318,7 @@ void MainWindow::remWindowsTopHint()
 void MainWindow::on_action_about_triggered()
 {
     QMessageBox aboutMB(QMessageBox::NoIcon, "关于", "<H3>全聚合影视 v2.5.1（2020.5.24 魔改版）</H3>一款基于 Qt5 的云播放器。<H4>作者：nohacks</H4><ul><li>E-mail：<a href='mailto:nohacks@vip.qq.com'>nohacks@vip.qq.com</a></li><li>主&nbsp;&nbsp;&nbsp;&nbsp;页：<a href='https://github.com/xymov'>https://github.com/xymov</a></li></ul><H4>致谢：</H4><ul><li>播放器：<a href='https://github.com/sonichy/HTYMediaPlayer'>https://github.com/sonichy/HTYMediaPlayer</a></li></ul>");
-    aboutMB.setIconPixmap(QPixmap("://resource/img/icon.png"));
+    aboutMB.setIconPixmap(QPixmap(":/img/icon.png"));
     aboutMB.setStyleSheet("QLabel#qt_msgbox_label{"
                           "min-width: 360px;"
                           "min-height: 222px; "

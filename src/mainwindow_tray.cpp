@@ -4,7 +4,7 @@
 void MainWindow::initTray()
 {
     _tray = new QSystemTrayIcon(this);
-    _tray->setIcon(QIcon("://resource/img/icon.png"));
+    _tray->setIcon(QIcon(":/img/icon.png"));
     _tray->setToolTip(this->windowTitle());
     _tray->setContextMenu(ui->menu_tray);
 

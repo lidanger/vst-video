@@ -1,0 +1,46 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/camera_on.svg</file>
+        <file>img/camera_out.svg</file>
+        <file>img/front_off.svg</file>
+        <file>img/front_on.svg</file>
+        <file>img/front_out.svg</file>
+        <file>img/full_on.svg</file>
+        <file>img/general_out.svg</file>
+        <file>img/ico.svg</file>
+        <file>img/icon.png</file>
+        <file>img/list_out.svg</file>
+        <file>img/loading.gif</file>
+        <file>img/next_off.svg</file>
+        <file>img/next_on.svg</file>
+        <file>img/next_out.svg</file>
+        <file>img/pallette.svg</file>
+        <file>img/pause_on.svg</file>
+        <file>img/pause_out.svg</file>
+        <file>img/play_at.svg</file>
+        <file>img/play_on.svg</file>
+        <file>img/play_out.svg</file>
+        <file>img/setting_on.svg</file>
+        <file>img/setting_out.svg</file>
+        <file>img/sliderImg.png</file>
+        <file>img/subtitle.svg</file>
+        <file>img/timg.jpeg</file>
+        <file>img/volume-down_on.svg</file>
+        <file>img/volume-down_out.svg</file>
+        <file>img/volume-off_on.svg</file>
+        <file>img/volume-off_out.svg</file>
+        <file>img/volume-up_on.svg</file>
+        <file>img/volume-up_out.svg</file>
+        <file>img/minimize.svg</file>
+        <file>source/live.txt</file>
+        <file>source/source.txt</file>
+        <file>img/full_out.svg</file>
+        <file>img/maximize.svg</file>
+        <file>img/close.svg</file>
+        <file>img/menu.svg</file>
+        <file>img/list_on.svg</file>
+        <file>img/general_on.svg</file>
+        <file>source/volume.qss</file>
+        <file>img/search.svg</file>
+    </qresource>
+</RCC>

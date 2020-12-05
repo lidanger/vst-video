@@ -216,6 +216,11 @@ private slots:
     void hideVolumeSlider();
     void showVolumeSlider();
 
+    void on_pushButton_search_pressed();
+
+    void switch_player_detail();
+    void switch_player_list();
+
 signals:
 
     void quit();
@@ -261,6 +266,8 @@ private:
     QMutex _detail_locker;
     // 用于浏览资源并发同步
     QMutex _browse_locker;
+
+    QString _searchString;
 
 private:
 

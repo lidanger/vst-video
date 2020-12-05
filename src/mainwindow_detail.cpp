@@ -197,7 +197,16 @@ void MainWindow::on_info_play_clicked()
     show_loading(false);
 
     if (ui->comboBox_part->count() == 0)
+    {
+        ui->tabWidget->setCurrentWidget(ui->tab_player);
         return;
+    }
+
+    if(ui->player_control_part->currentIndex() == ui->comboBox_part->currentIndex() && ui->label_VideoName->text().contains(ui->comboBox_name->currentText()))
+    {
+        ui->tabWidget->setCurrentWidget(ui->tab_player);
+        return;
+    }
 
     app.live = false;
     loadPlay(ui->comboBox_part->currentIndex());
@@ -212,7 +221,7 @@ void MainWindow::on_info_play_clicked()
 void MainWindow::loadPlay(int index, qint64 time)
 {
     // 视频名称
-    ui->label_VideoName->setText(QString::asprintf("<a href='https://github.com/xymov/vst-video/'>%s</a>", ui->comboBox_name->currentText().toLocal8Bit().data()));
+    ui->label_VideoName->setText(QString("<a href='https://github.com/xymov/vst-video/'>%1</a>").arg(ui->comboBox_name->currentText()));
 
     video->setUpdatesEnabled(true);
 

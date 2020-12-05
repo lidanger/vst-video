@@ -41,7 +41,7 @@ void MainWindow::initPlayer()
     // 当前媒体的播放状态已更改
     connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(stateChanged(QMediaPlayer::State)));
 
-    connect(playlist, SIGNAL(currentIndexChanged(int)), this, SLOT(playerlist_currentIndexChanged(int)));
+    connect(playlist, SIGNAL(currentIndexChanged(int)), this, SLOT(playlist_currentIndexChanged(int)));
 
     // 播放器右键菜单
     video->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -92,6 +92,23 @@ void MainWindow::initPlayer()
     ui->label->hide();
     ui->label_VideoName->hide();
     ui->player_control_part->hide();
+
+    auto action = new QAction("详情", this);
+    action->setShortcut(QKeySequence("F8"));
+    connect(action, &QAction::triggered, this, &MainWindow::switch_player_detail);
+    this->addAction(action);
+}
+
+void MainWindow::switch_player_detail()
+{
+    if(ui->tabWidget->currentWidget() == ui->tab_detail)
+    {
+        ui->tabWidget->setCurrentWidget(ui->tab_player);
+    }
+    else
+    {
+        on_label_VideoName_linkActivated(nullptr);
+    }
 }
 
 void MainWindow::playlist_currentIndexChanged(int index)
@@ -191,8 +208,8 @@ void MainWindow::mediaStatusChanged(QMediaPlayer::MediaStatus status)
 // 播放器媒体状态被改变
 void MainWindow::stateChanged(QMediaPlayer::State state)
 {
-    QString play = "QPushButton{border-image:url(://resource/img/play_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(://resource/img/play_on.svg) -0px 0px no-repeat;}";
-    QString pause = "QPushButton{border-image:url(://resource/img/pause_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(://resource/img/pause_on.svg) -0px 0px no-repeat;}";
+    QString play = "QPushButton{border-image:url(:/img/play_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(:/img/play_on.svg) -0px 0px no-repeat;}";
+    QString pause = "QPushButton{border-image:url(:/img/pause_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(:/img/pause_on.svg) -0px 0px no-repeat;}";
 
     switch (state)
     {
@@ -354,8 +371,8 @@ void MainWindow::on_pushButton_next_clicked()
 // 控制条静音按钮被单击
 void MainWindow::on_pushButton_sound_clicked()
 {
-    QString sound = "QPushButton{border-image:url(://resource/img/volume-up_out.svg) 0px 0px no-repeat;}QPushButton:hover{://resource/img/volume-up_on.svg) -0px 0px no-repeat;}";
-    QString mute = "QPushButton{border-image:url(://resource/img/volume-off_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(://resource/img/volume-off_on.svg) -0px 0px no-repeat;}";
+    QString sound = "QPushButton{border-image:url(:/img/volume-up_out.svg) 0px 0px no-repeat;}QPushButton:hover{:/img/volume-up_on.svg) -0px 0px no-repeat;}";
+    QString mute = "QPushButton{border-image:url(:/img/volume-off_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(:/img/volume-off_on.svg) -0px 0px no-repeat;}";
 
     if (player->isMuted())
     {
@@ -372,8 +389,8 @@ void MainWindow::on_pushButton_sound_clicked()
 // 切换全屏状态
 void MainWindow::switchFullScreen(bool cfull)
 {
-    QString full = "QPushButton{border-image:url(://resource/img/full_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(://resource/img/full_on.svg) -0px 0px no-repeat;}";
-    QString general = "QPushButton{border-image:url(://resource/img/general_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(://resource/img/general_on.svg) -0px 0px no-repeat;}";
+//    QString full = "QPushButton{border-image:url(:/img/full_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(:/img/full_on.svg) -0px 0px no-repeat;}";
+//    QString general = "QPushButton{border-image:url(:/img/general_out.svg) 0px 0px no-repeat;}QPushButton:hover{border-image:url(:/img/general_on.svg) -0px 0px no-repeat;}";
 
     video->setFocus();
 
@@ -386,10 +403,10 @@ void MainWindow::switchFullScreen(bool cfull)
         //ui->box_info->hide();
         //ui->box_page->hide();
         ui->box_control->hide();
-        ui->tabWidget->findChildren<QTabBar *>().at(0)->hide();
+        //ui->tabWidget->findChildren<QTabBar *>().at(0)->hide();
         m_timer->start(2000);
         //video->setCursor(Qt::BlankCursor);  // 隐藏鼠标
-        ui->pushButton_full->setStyleSheet(general);
+        ui->pushButton_full->setIcon(QIcon(":/img/general_out.svg"));
         ui->tabWidget->setStyleSheet("border:none;");
         ui->titlebar->hide();
         showFullScreen();
@@ -397,7 +414,7 @@ void MainWindow::switchFullScreen(bool cfull)
     else
     {
         ui->tabWidget->setStyleSheet(app.playlist ? "" : "border:none;");
-        ui->pushButton_full->setStyleSheet(full);
+        ui->pushButton_full->setIcon(QIcon(":/img/full_out.svg"));
         ui->box_control->show();
         m_timer->stop();
         video->setCursor(Qt::ArrowCursor); // 显示正常鼠标
@@ -409,43 +426,9 @@ void MainWindow::switchFullScreen(bool cfull)
             ui->box_source->show();
             //ui->box_info->show();
             //ui->box_page->show();
-            ui->tabWidget->findChildren<QTabBar *>().at(0)->show();
+            //ui->tabWidget->findChildren<QTabBar *>().at(0)->show();
             setWindowState(app.windowState);
         }
-    }
-}
-
-// 控制条全屏按钮被单击
-void MainWindow::on_pushButton_full_clicked()
-{
-    switchFullScreen(!isFullScreen());
-}
-
-// 切换列表显示
-void MainWindow::on_pushButton_playlist_clicked()
-{
-    if (ui->box_source->isHidden())
-    {
-        ui->tabWidget->setStyleSheet("");
-        ui->box_control->show();
-        ui->box_source->show();
-        //ui->box_info->show();
-        //ui->box_page->show();
-        ui->tabWidget->findChildren<QTabBar *>().at(0)->show();
-        // 取消置顶
-        //hide();setWindowFlags(windowFlags() ^ Qt::WindowStaysOnTopHint);show();
-    }
-    else
-    {
-        ui->box_source->hide();
-        //ui->box_info->hide();
-        //ui->box_page->hide();
-        ui->tabWidget->findChildren<QTabBar *>().at(0)->hide();
-        ui->tabWidget->setStyleSheet("border:0;");
-        // 窗口置顶
-        //hide();setWindowFlags(windowFlags()|Qt::WindowStaysOnTopHint);show();
-
-        m_timer->start(3000);
     }
 }
 
@@ -613,4 +596,3 @@ void MainWindow::on_label_VideoName_linkActivated(const QString &link)
 
     ui->tabWidget->setCurrentWidget(ui->tab_detail);
 }
-

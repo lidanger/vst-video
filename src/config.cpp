@@ -16,7 +16,7 @@ Config::Config(QString qstrfilename)
 
     m_psetting = new QSettings(m_qstrFileName, QSettings::IniFormat);
 
-    qDebug() << m_qstrFileName;
+    qDebug() << m_qstrFileName << endl;
 }
 
 Config::~Config()

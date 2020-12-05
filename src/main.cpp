@@ -27,8 +27,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
-    //a.setQuitOnLastWindowClosed(true);
-    a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+    a.setQuitOnLastWindowClosed(true);
 
     // 解决汉字乱码问题
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
@@ -39,7 +38,7 @@ int main(int argc, char *argv[])
 
     qSetMessagePattern("[ %{file}: %{line} ] %{message}");
 
-    MainWindow w;    
+    MainWindow w;
     w.show();
 
     return a.exec();
