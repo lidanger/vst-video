@@ -612,7 +612,7 @@ void PlayerPage::_player_mediaStatusChanged(QMediaPlayer::MediaStatus status)
         _progress->setEnabled(false);
         Loading::instance()->show();
         _part->setCurrentIndex(_playlist->currentIndex());
-        qDebug() << "openUrl：" << _player->currentMedia().canonicalUrl().toString();
+        //qDebug() << "openUrl：" << _player->currentMedia().canonicalUrl().toString();
         break;
     case QMediaPlayer::LoadedMedia:
         _status->setText("准备就绪");
@@ -718,6 +718,7 @@ void PlayerPage::_control_timeOut()
     else
     {
         _video->setCursor(Qt::ArrowCursor);
+
         _control->show();
         emit requestShowTitleBar(true);
     }

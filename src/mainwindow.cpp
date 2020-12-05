@@ -64,14 +64,14 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             }
         }
     }
-    else if(event->type() == QEvent::Show)
+    else if(event->type() == QEvent::Show || event->type() == QEvent::ShowToParent)
     {
         if(watched == _dock)
         {
             WebResource::instance()->app.hideResource = false;
         }
     }
-    else if(event->type() == QEvent::Hide)
+    else if(event->type() == QEvent::Hide || event->type() == QEvent::HideToParent)
     {
         if(watched == _dock)
         {
@@ -212,11 +212,7 @@ void MainWindow::_show_fullscreen()
         this->showNormal();
 
         _titlebar->show();
-
-        if (WebResource::instance()->app.showResourceBeforeFullScreen)
-        {
-            _dock->show();
-        }
+        _dock->setVisible(WebResource::instance()->app.showResourceBeforeFullScreen);
 
         setWindowState(WebResource::instance()->app.statesBeforeFullScreen);
     }
@@ -430,7 +426,7 @@ void MainWindow::_init_control()
     _stack->addWidget(_search_page);
 
     // 资源区
-    _dock = new QDockWidget("资源列表", _real_window);
+    _dock = new QDockWidget("资源列表", this);
     _dock->setMinimumWidth(145);
     _dock->setMaximumWidth(400);
     _dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
