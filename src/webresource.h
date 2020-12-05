@@ -45,6 +45,10 @@ typedef struct Appinfo
         auto app = QApplication::instance();
         QSettings sets(app->organizationName(), app->applicationName());
         QFileInfo fi(sets.fileName());
+        if(!fi.dir().exists())
+        {
+            fi.dir().mkpath(fi.dir().absolutePath());
+        }
 
         sourcePath = fi.dir().filePath("source.txt");
         livePath = fi.dir().filePath("live.txt");
