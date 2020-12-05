@@ -436,7 +436,7 @@ void MainWindow::_init_control()
     connect(_dock, SIGNAL(topLevelChanged(bool)), this, SLOT(_dock_topLevelChanged(bool)));
     _dock->installEventFilter(this);
     _real_window->addDockWidget(Qt::LeftDockWidgetArea, _dock);
-    _real_window->resizeDocks({_dock}, {145}, Qt::Horizontal);
+    _real_window->resizeDocks({_dock}, {153}, Qt::Horizontal);
     _real_window->setStyleSheet("QMainWindow::separator{"
                                 "width:1px;"
                                 "height:1px;}");
